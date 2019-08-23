@@ -1,0 +1,4 @@
+dcicutils
+cooler
+jupyter
+matplotlib
