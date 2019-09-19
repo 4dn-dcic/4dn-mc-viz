@@ -69,6 +69,7 @@ def create_clusters_h5(clusters_acc, binsize, chromsize_acc, outfile, lines=1000
         start = bins.create_dataset("start", data=np.array([item[1] for item in bin_list]), dtype=np.int32)
         end = bins.create_dataset("end", data=np.array([item[2] for item in bin_list]), dtype=np.int32)
         clusters = f.create_group("clusters")
+        clusters.attrs['max'] = max([item[1] for item in cluster_list])
         print('writing clusters')
         cluster_bins = [item[0] for item in cluster_list]
         cl_bin = clusters.create_dataset("bin", data=np.array(cluster_bins), dtype=np.int32)
@@ -138,13 +139,14 @@ def filter_cluster_data(filename, bins):
         data = {'bin': f['clusters']['bin'], 'len': f['clusters']['cluster_name']}
         df = pd.DataFrame(data)
         offsets = np.array(f['index']['bin_offset'][bins[0]:bins[0]+2])
+        cluster_max = f['clusters'].attrs['max'] + 1
 
-    idx = np.zeros(55000000, dtype='bool')
+    idx = np.zeros(cluster_max, dtype='bool')
     clusters = df['len'].iloc[offsets[0]:offsets[1]]
     idx[clusters] = True
     df = df.iloc[idx[df['len'].values]]
     for b in bins[1:]:
-        idx = np.zeros(55000000, dtype='bool')
+        idx = np.zeros(cluster_max, dtype='bool')
         clusters = df['len'][df['bin'] == b]
         idx[clusters] = True
         df = df[idx[df['len'].values]]
