@@ -2,6 +2,7 @@
 Experimenting with multi-contact genomics file format
 
 General h5 schema:
+```console
 /
  ├── chroms
  │   ├── length int32
@@ -16,3 +17,4 @@ General h5 schema:
  │   └── cluster_length int32
  └── index
      └── bin_offset int32
+```
